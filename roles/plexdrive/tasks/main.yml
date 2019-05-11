@@ -30,11 +30,11 @@
   shell: "/bin/umount -f /mnt/plexdrive 2>/dev/null || :"
   ignore_errors: yes
 
-- name: Create plexdrive directories
-  file: "path={{item}} state=directory mode=0775 owner={{user}} group={{user}} recurse=yes"
-  with_items:
-    - /opt/plexdrive
-    - /mnt/plexdrive
+#- name: Create plexdrive directories
+#  file: "path={{item}} state=directory mode=0775 owner={{user}} group={{user}} recurse=yes"
+#  with_items:
+#    - /opt/plexdrive
+#    - /mnt/plexdrive
 
 - name: Install plexdrive
   get_url:
