@@ -9,18 +9,19 @@
 #########################################################################
 ---
 - name: "Create 'sickbeard_mp4_automator' directory"
-  file: "path={{ item }} state=directory mode=0775 owner={{ user }} group={{ user }} recurse=yes"
+  file: "path={{ item }} state=directory mode=0775 owner={{ user.name }} group={{ user.name }} recurse=yes"
   with_items:
     - "/opt/scripts/sickbeard_mp4_automator"
 
 - name: "Clone 'sickbeard_mp4_automator' repo"
   git:
-    repo: "https://github.com/mdhiggins/sickbeard_mp4_automator"
+    repo: "https://github.com/mdhiggins/sickbeard_mp4_automator.git"
     dest: "/opt/scripts/sickbeard_mp4_automator"
-    version: master
+    clone: yes
+    version: HEAD
     force: yes
   become: yes
-  become_user: "{{ user }}"
+  become_user: "{{ user.name }}"
 
 - name: "Wait for 'autoProcess.ini.sample' file"
   wait_for:

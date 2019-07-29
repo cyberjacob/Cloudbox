@@ -102,10 +102,10 @@ function build_url() {
     head -1 ${CB_ACCOUNTS} | grep -q "\$ANSIBLE_VAULT"
     rc=$?
     if [[ ${rc} == 0 ]]; then
-        VAULT_FILE=$(cat ${CB_ANSIBLE} | grep "vault_password_file" | sed 's/^.*=//' | sed "s/ //g")
-        DOMAIN=$(ansible-vault view --vault-password-file=${VAULT_FILE} ${CB_ACCOUNTS} | yq -r .domain)
+        VAULT_FILE=$(cat ${CB_ANSIBLE} | grep "^vault_password_file" | sed 's/^.*=//' | sed "s/ //g")
+        DOMAIN=$(ansible-vault view --vault-password-file=${VAULT_FILE} ${CB_ACCOUNTS} | yq -r .user.domain)
     elif [[ ${rc} == 1 ]]; then
-        DOMAIN=$(cat ${CB_ACCOUNTS} | yq -r .domain)
+        DOMAIN=$(cat ${CB_ACCOUNTS} | yq -r .user.domain)
     fi
 
     # If SERVER_IP is 0.0.0.0, assign public IP address to REAL_IP.

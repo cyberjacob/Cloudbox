@@ -8,16 +8,6 @@
 #                   GNU General Public License v3.0                     #
 #########################################################################
 ---
-# Set basic variable(s)
-- name: "Get 'cloudbox.yml' info."
-  stat:
-    path: "{{ playbook_dir }}/backup.yml"
-  register: backup_yml
-
-- name: Set variables
-  set_fact:
-    user: "{{ backup_yml.stat.pw_name }}"
-
 # Remove trailing forward slashes from backup paths
 - name: Remove trailing forward slashes from backup paths
   set_fact:
@@ -31,6 +21,7 @@
     rclone: "{{ rclone | combine(rclone_tmp) }}"
     rsync: "{{ rsync | combine(rsync_tmp) }}"
 
+# Restore service
 - name: "Set 'restore_service_enabled' variable"
   set_fact:
     restore_service_enabled: "{{ true if not(

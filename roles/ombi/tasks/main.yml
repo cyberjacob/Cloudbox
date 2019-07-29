@@ -1,5 +1,5 @@
 #########################################################################
-# Title:         Cloudbox: Ombi Role                                    #
+# Title:         Cloudbox: Ombi                                         #
 # Author(s):     RXWatcher1, l3uddz, desimaniac                         #
 # URL:           https://github.com/cloudbox/cloudbox                   #
 # Docker Image:  hotio/ombi                                             #
@@ -21,11 +21,19 @@
     name: ombi
     state: absent
 
-- name: Suitarr Migration Tasks
-  import_tasks: "subtasks/suitarr_migration.yml"
+- name: Suitarr | Migration Tasks
+  import_tasks: "subtasks/suitarr/migration.yml"
+
+- name: Set 'ombi_version' variable
+  set_fact:
+    ombi_version: "{{ suitarr.version }}"
+
+- name: Suitarr | Version Check Tasks
+  include_tasks: "subtasks/suitarr/version.yml"
+  when: (ombi_version == 'unstable')
 
 - name: Create ombi directories
-  file: "path={{ item }} state=directory mode=0775 owner={{ user }} group={{ user }}"
+  file: "path={{ item }} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
   with_items:
     - /opt/ombi
 
@@ -37,15 +45,15 @@
     published_ports:
       - "127.0.0.1:3579:5000"
     env:
-      VERSION: "{{ suitarr.version }}"
+      VERSION: "{{ ombi_version }}"
       BACKUP: "no"
       PUID: "{{ uid }}"
       PGID: "{{ gid }}"
       UMASK: 002
-      VIRTUAL_HOST: "{{ ombi.subdomain|default('ombi',true) }}.{{ domain }}"
+      VIRTUAL_HOST: "{{ ombi.subdomain|default('ombi',true) }}.{{ user.domain }}"
       VIRTUAL_PORT: 5000
-      LETSENCRYPT_HOST: "{{ ombi.subdomain|default('ombi',true) }}.{{ domain }}"
-      LETSENCRYPT_EMAIL: "{{ email }}"
+      LETSENCRYPT_HOST: "{{ ombi.subdomain|default('ombi',true) }}.{{ user.domain }}"
+      LETSENCRYPT_EMAIL: "{{ user.email }}"
       LC_ALL: "en_US.UTF-8"
       TZ: "{{ tz }}"
     volumes:

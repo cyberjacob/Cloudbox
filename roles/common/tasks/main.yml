@@ -25,12 +25,12 @@
   when: (root_fstype is defined) and (root_fstype == 'btrfs')
 
 - name: Create common directories
-  file: "path={{ item }} state=directory mode=0775 owner={{ user }} group={{ user }}"
+  file: "path={{ item }} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
   with_items:
-    - /home/{{ user }}
-    - /home/{{ user }}/logs
-    - /home/{{ user }}/.config
-    - /home/{{ user }}/.config/pip
+    - /home/{{ user.name }}
+    - /home/{{ user.name }}/logs
+    - /home/{{ user.name }}/.config
+    - /home/{{ user.name }}/.config/pip
     - /opt
     - /mnt/local
     - /mnt/local/Media
@@ -135,12 +135,12 @@
   ignore_errors: yes
   when: (not unrar_binary.stat.exists)
 
-- name: "Import pip.conf into /home/{{ user }}/.config/pip/pip.conf"
+- name: "Import pip.conf into /home/{{ user.name }}/.config/pip/pip.conf"
   copy:
     src: "pip.conf"
-    dest: "/home/{{ user }}/.config/pip/pip.conf"
-    owner: "{{ user }}"
-    group: "{{ user }}"
+    dest: "/home/{{ user.name }}/.config/pip/pip.conf"
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
     mode: 0775
     force: yes
 
@@ -169,12 +169,6 @@
 - name: Install pip glances
   shell: pip install glances[action,browser,cloud,cpuinfo,docker,folders,gpu,graph,ip,raid,snmp,web]
   tags: glances
-
-- name: Install yyq
-  import_role:
-    name: yyq
-  tags: yyq
-  ignore_errors: yes
 
 - name: Install z
   import_role:
@@ -210,10 +204,4 @@
   import_role:
     name: nethogs
   tags: nethogs
-  ignore_errors: yes
-
-- name: Cloudflare Cache Purge Task
-  import_tasks: "cloudflare_cache_purge.yml"
-  when: cloudflare_enabled
-  tags: cloudflare-cache-purge
   ignore_errors: yes

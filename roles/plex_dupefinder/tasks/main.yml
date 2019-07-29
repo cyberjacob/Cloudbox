@@ -9,16 +9,19 @@
 #########################################################################
 ---
 - name: Create plex_dupefinder directories
-  file: "path={{ item }} state=directory mode=0775 owner={{ user }} group={{ user }} recurse=yes"
+  file: "path={{ item }} state=directory mode=0775 owner={{ user.name }} group={{ user.name }} recurse=yes"
   with_items:
     - /opt/plex_dupefinder
 
 - name: Clone plex_dupefinder
   git:
-    repo: https://github.com/l3uddz/plex_dupefinder/
+    repo: https://github.com/l3uddz/plex_dupefinder.git
     dest: /opt/plex_dupefinder
+    clone: yes
     version: HEAD
     force: yes
+  become: yes
+  become_user: "{{ user.name }}"
 
 - name: Install pip requirements
   pip:
@@ -39,21 +42,18 @@
   template:
     src: config.json.j2
     dest: /opt/plex_dupefinder/config.json
-    owner: "{{ user }}"
-    group: "{{ user }}"
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
     mode: 0775
-    force: yes
+    force: no
   when: not plex_dupefinder_config.stat.exists
 
 - name: Set plexdupes.py as executable
   file:
     path: /opt/plex_dupefinder/plexdupes.py
-    owner: "{{ user }}"
-    group: "{{ user }}"
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
     mode: a+x
-
-- name: Set directory permissions
-  file: "path=/opt/plex_dupefinder state=directory owner={{ user }} group={{ user }} recurse=yes"
 
 - name: "Create /usr/local/bin symlink"
   file:

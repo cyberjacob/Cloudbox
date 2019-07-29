@@ -6,9 +6,9 @@
     - ['adv_settings.yml', 'defaults/adv_settings.yml.default']
     - ['backup_config.yml', 'defaults/backup_config.yml.default']
   roles:
-    - { role: sanity_check }
+    - { role: sanity_check, tags: ['sanity_check'] }
     - { role: settings, tags: ['always', 'settings'] }
-    - { role: pre_tasks }
+    - { role: pre_tasks, tags: ['pre_tasks'] }
     - { role: backup, tags: ['backup'] }
     - { role: restore, tags: ['restore'] }
     - { role: kernel, tags: ['core', 'cloudbox', 'mediabox', 'feederbox', 'preinstall', 'kernel'] }
@@ -42,8 +42,9 @@
     - { role: sickbeard_mp4_automator, tags: ['cloudbox', 'feederbox', 'sickbeard_mp4_automator', 'sma'], when: ['sma_enabled'] }
     - { role: feeder, tags: ['feeder_mount', 'feeder_mount_override', 'feeder_unmount'] }
     - { role: plex_auth_token, tags: ['plex_auth_token'] }
-    - { role: webtools, tags: ['webtools', 'reinstall-webtools'] }
-    - { role: sub-zero, tags: ['sub-zero', 'reinstall-sub-zero'] }
+    - { role: trakttv-plugin, tags: ['trakttv-plugin'] }
+    - { role: sub-zero-plugin, tags: ['sub-zero-plugin', 'reinstall-sub-zero-plugin'] }
+    - { role: webtools-plugin, tags: ['webtools-plugin', 'reinstall-webtools-plugin'] }
     - { role: subliminal, tags: ['subliminal'] }
     - { role: watchtower, tags: ['watchtower'] }
     - { role: plexrequests, tags: ['plexrequests'] }
